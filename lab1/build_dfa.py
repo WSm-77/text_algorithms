@@ -265,9 +265,6 @@ def build_dfa(regex: RegEx, alphabet: set[str]) -> Optional[DFA]:
     accept_states.add(start_state)
     regex_to_state[regex] = start_state
 
-    if regex.nullable():
-        accept_states.add(start_state)
-
     while states_to_process:
         current_state = states_to_process.popleft()
         current_regex = state_to_regex[current_state]
@@ -282,14 +279,13 @@ def build_dfa(regex: RegEx, alphabet: set[str]) -> Optional[DFA]:
                 state_to_regex[next_state] = simplified_regex
                 regex_to_state[simplified_regex] = next_state
 
-                if simplified_regex.nullable():
-                    accept_states.add(next_state)
-
                 states_to_process.append(next_state)
 
             next_state = regex_to_state[simplified_regex]
             transition_key = (current_state, symbol)
             transitions[transition_key] = next_state
+
+    accept_states = {state for state in states if state_to_regex[state].nullable()}
 
     # Return the constructed DFA
     # You should return DFA(states, alphabet, transitions, start_state, accept_states)
