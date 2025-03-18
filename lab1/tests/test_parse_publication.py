@@ -1,4 +1,4 @@
-from lab_1.parse_publication import parse_publication
+from lab1.parse_publication import parse_publication
 
 
 class TestPublicationParsing:

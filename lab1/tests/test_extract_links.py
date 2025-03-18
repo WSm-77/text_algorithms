@@ -1,4 +1,4 @@
-from lab_1.extract_links import extract_links
+from lab1.extract_links import extract_links
 
 
 class TestHtmlLinkExtraction:

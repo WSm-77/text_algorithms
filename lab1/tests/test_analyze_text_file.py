@@ -1,6 +1,6 @@
 import os
 
-from lab_1.analyze_text_file import analyze_text_file
+from lab1.analyze_text_file import analyze_text_file
 
 TEST_FILE_PATH = os.path.join("test_file.md")
 
