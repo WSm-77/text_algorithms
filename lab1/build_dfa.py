@@ -225,6 +225,16 @@ def simplify(regex):
 
     return regex
 
+class StateGenerator:
+    def __init__(self):
+        self.counter = 0
+        self.prefix = "q"
+
+    def get_next_state(self):
+        name = f"{self.prefix}{self.counter}"
+        self.counter += 1
+
+        return name
 
 def build_dfa(regex: RegEx, alphabet: set[str]) -> Optional[DFA]:
     # TODO: Implement the Brzozowski algorithm to convert regex to DFA
@@ -238,17 +248,49 @@ def build_dfa(regex: RegEx, alphabet: set[str]) -> Optional[DFA]:
     # 4. Continue until no new states are discovered
 
     # Initialize data structures
-    states = set()  # Set of state names (q0, q1, etc.)
-    state_to_regex = {}  # Maps state names to their regex
-    accept_states = set()  # Set of accepting state names
-    transitions = {}  # Maps (state, symbol) pairs to next state
-    regex_to_state = {}  # Maps string representations of regex to state names
+    states: set[str] = set()  # Set of state names (q0, q1, etc.)
+    state_to_regex: dict[str, RegEx] = {}  # Maps state names to their regex
+    accept_states: set[str] = set()  # Set of accepting state names
+    transitions: dict[tuple[str, str], str] = {}  # Maps (state, symbol) pairs to next state
+    regex_to_state: dict[RegEx, str] = {}  # Maps string representations of regex to state names
 
     # Initialize state counter for generating unique state names
-    state_counter = 0
+    state_generator = StateGenerator()
 
-    # YOUR CODE HERE
+    start_state = state_generator.get_next_state()
+    states_to_process = deque([start_state])
+
+    states.add(start_state)
+    state_to_regex[start_state] = regex
+    accept_states.add(start_state)
+    regex_to_state[regex] = start_state
+
+    if regex.nullable():
+        accept_states.add(start_state)
+
+    while states_to_process:
+        current_state = states_to_process.popleft()
+        current_regex = state_to_regex[current_state]
+
+        for symbol in alphabet:
+            derrivative = current_regex.derivative(symbol)
+            simplified_regex = simplify(derrivative)
+
+            if simplified_regex not in regex_to_state:
+                next_state = state_generator.get_next_state()
+                states.add(next_state)
+                state_to_regex[next_state] = simplified_regex
+                regex_to_state[simplified_regex] = next_state
+
+                if simplified_regex.nullable():
+                    accept_states.add(next_state)
+
+                states_to_process.append(next_state)
+
+            next_state = regex_to_state[simplified_regex]
+            transition_key = (current_state, symbol)
+            transitions[transition_key] = next_state
 
     # Return the constructed DFA
     # You should return DFA(states, alphabet, transitions, start_state, accept_states)
-    return None
+    return DFA(states, alphabet, transitions, start_state, accept_states)
