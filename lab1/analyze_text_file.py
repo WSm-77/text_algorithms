@@ -63,7 +63,7 @@ def analyze_text_file(filename: str) -> dict:
     word_pattern = r"\b\w+\b"
 
     words = re.findall(word_pattern, content)
-    words = list(filter(lambda word: word not in stop_words, words))
+    # words = list(filter(lambda word: word not in stop_words, words))
     word_count = len(words)
 
     # Implement sentence splitting using regex
@@ -100,11 +100,16 @@ def analyze_text_file(filename: str) -> dict:
     date_pattern = re.compile("(" + ")|(".join(date_patterns) + ")")
     dates = [match.group() for match in re.finditer(date_pattern, content)]
 
-    # TODO: Analyze paragraphs
+    # Analyze paragraphs
     # Split the content into paragraphs and count words in each
     # Paragraphs are typically separated by one or more blank lines
     paragraphs = re.split(r"\n\s*\n", content)
+
     paragraph_sizes = {}
+
+    for no, paragraph in enumerate(paragraphs):
+        words = re.findall(word_pattern, paragraph)
+        paragraph_sizes[no] = len(words)
 
     return {
         "word_count": word_count,
