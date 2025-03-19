@@ -237,7 +237,7 @@ class StateGenerator:
         return name
 
 def build_dfa(regex: RegEx, alphabet: set[str]) -> Optional[DFA]:
-    # TODO: Implement the Brzozowski algorithm to convert regex to DFA
+    # Implement the Brzozowski algorithm to convert regex to DFA
     # Steps:
     # 1. Start with the initial regex as the start state
     # 2. For each state and each symbol in the alphabet:
