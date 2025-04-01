@@ -1,3 +1,10 @@
+def length_of_common_prefix(str1: str, str2: str) -> int:
+    min_len = min(len(str1), len(str2))
+    for i in range(min_len):
+        if str1[i] != str2[i]:
+            return i
+    return min_len
+
 def compute_z_array(s: str) -> list[int]:
     """
     Compute the Z array for a string.
@@ -17,8 +24,19 @@ def compute_z_array(s: str) -> list[int]:
     # - Use the Z-box technique to avoid redundant character comparisons
     # - Handle the cases when i is inside or outside the current Z-box
 
-    return [0] * len(s)
+    # str_len = len(s)
 
+    # res = [length_of_common_prefix(s[i:], s) for i in range(str_len)]
+    # res[0] = 0
+
+    # return res
+
+    z = [0] * len(s)
+
+    for k in range(1, len(s)):
+        z[k] = length_of_common_prefix(s[k:], s)
+
+    return z
 
 def z_pattern_match(text: str, pattern: str) -> list[int]:
     """
@@ -32,10 +50,26 @@ def z_pattern_match(text: str, pattern: str) -> list[int]:
         A list of starting positions (0-indexed) where the pattern was found in the text
     """
     # TODO: Implement pattern matching using the Z algorithm
-    # 1. Create a concatenated string: pattern + special_character + text
-    # 2. Compute the Z array for this concatenated string
-    # 3. Find positions where Z[i] equals the pattern length
-    # 4. Convert these positions in the concatenated string to positions in the original text
-    # 5. Return all positions where the pattern is found in the text
 
-    return []
+    text_len = len(text)
+    pattern_len = len(pattern)
+
+    if pattern_len == 0 or text_len < pattern_len:
+        return []
+
+    SPECIAL_CHAR = '\\'
+
+    # 1. Create a concatenated string: pattern + special_character + text
+    concatenated = pattern + SPECIAL_CHAR + text
+
+    # 2. Compute the Z array for this concatenated string
+    z_arr = compute_z_array(concatenated)
+
+    # 3. Find positions where Z[i] equals the pattern length
+    found_positions = [i for i, z_val in enumerate(z_arr) if z_val == pattern_len]
+
+    # 4. Convert these positions in the concatenated string to positions in the original text
+    converted_positions = [pos - len(SPECIAL_CHAR) - pattern_len for pos in found_positions]
+
+    # 5. Return all positions where the pattern is found in the text
+    return converted_positions
