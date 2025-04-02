@@ -1,3 +1,16 @@
+def hash_byte(curr_hash: int, byte: int, mod: int = 101):
+    return (curr_hash + byte) % mod
+
+def unhash_byte(curr_hash: int, byte: int, mod: int = 101):
+    return (curr_hash - byte + mod) % mod
+
+def hash_string(substr: str, mod: int = 101):
+    hash_res = 0
+    for char in substr:
+        hash_res = hash_byte(hash_res, ord(char), mod)
+
+    return hash_res
+
 def rabin_karp_pattern_match(text: str, pattern: str, prime: int = 101) -> list[int]:
     """
     Implementation of the Rabin-Karp pattern matching algorithm.
@@ -19,4 +32,27 @@ def rabin_karp_pattern_match(text: str, pattern: str, prime: int = 101) -> list[
     # 5. Return all positions where the pattern is found in the text
     # Note: Use the provided prime parameter for the hash function to avoid collisions
 
-    return []
+    result = []
+    text_len = len(text)
+    pattern_len = len(pattern)
+
+    if pattern_len == 0 or text_len < pattern_len:
+        return []
+
+    pattern_hash = hash_string(pattern, prime)
+    curr_hash = hash_string(text[:pattern_len], prime)
+
+    i = 0
+    while True:
+        if curr_hash == pattern_hash and text[i:i+pattern_len] == pattern:
+            result.append(i)
+
+        if text_len <= i + pattern_len:
+            break
+
+        curr_hash = hash_byte(curr_hash, ord(text[i+pattern_len]))
+        curr_hash = unhash_byte(curr_hash, ord(text[i]), prime)
+
+        i += 1
+
+    return result
