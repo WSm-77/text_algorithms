@@ -23,7 +23,7 @@ def rabin_karp_pattern_match(text: str, pattern: str, prime: int = 101) -> list[
     Returns:
         A list of starting positions (0-indexed) where the pattern was found in the text
     """
-    # TODO: Implement the Rabin-Karp string matching algorithm
+    # Implement the Rabin-Karp string matching algorithm
     # This algorithm uses hashing to find pattern matches:
     # 1. Compute the hash value of the pattern
     # 2. Compute the hash value of each text window of length equal to pattern length

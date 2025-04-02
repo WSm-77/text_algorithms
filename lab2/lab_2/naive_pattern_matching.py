@@ -9,7 +9,7 @@ def naive_pattern_match(text: str, pattern: str) -> list[int]:
     Returns:
         A list of starting positions (0-indexed) where the pattern was found in the text
     """
-    # TODO: Implement the naive pattern matching algorithm
+    # Implement the naive pattern matching algorithm
     # This is the most straightforward approach to string matching:
     # 1. Check every possible starting position in the text
     # 2. For each position, compare the pattern with the text character by character
