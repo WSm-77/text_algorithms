@@ -74,17 +74,6 @@ def compute_lps_array(pattern: str) -> list[int]:
 
     # return p
 
-def partial_func(pattern):
-        """ Calculate partial match table: String -> [Int]"""
-        ret = [0]
-
-        for i in range(1, len(pattern)):
-            j = ret[i - 1]
-            while j > 0 and pattern[j] != pattern[i]:
-                j = ret[j - 1]
-            ret.append(j + 1 if pattern[j] == pattern[i] else j)
-        return ret
-
 def kmp_pattern_match(text: str, pattern: str) -> list[int]:
     """
     Implementation of the Knuth-Morris-Pratt pattern matching algorithm.
@@ -96,7 +85,7 @@ def kmp_pattern_match(text: str, pattern: str) -> list[int]:
     Returns:
         A list of starting positions (0-indexed) where the pattern was found in the text
     """
-    # TODO: Implement the KMP string matching algorithm
+    # Implement the KMP string matching algorithm
     # 1. Preprocess the pattern to compute the LPS array
     # 2. Use the LPS array to determine how much to shift the pattern when a mismatch occurs
     # 3. This avoids redundant comparisons by using information about previous matches
@@ -110,18 +99,20 @@ def kmp_pattern_match(text: str, pattern: str) -> list[int]:
 
     result = []
 
-
-    partial, ret, j = partial_func(pattern), [], 0
-
+    p = compute_lps_array(pattern)
+    j = 0
     for i in range(len(text)):
         while j > 0 and text[i] != pattern[j]:
-            j = partial[j - 1]
-        if text[i] == pattern[j]: j += 1
-        if j == len(pattern):
-            ret.append(i - (j - 1))
-            j = partial[j - 1]
+            j = p[j - 1]
 
-    return ret
+        if text[i] == pattern[j]:
+            j += 1
+
+        if j == len(pattern):
+            result.append(i - len(pattern) + 1)
+            j = p[j - 1]
+
+    return result
 
 if __name__ == "__main__":
     pattern = "ABABACA"
