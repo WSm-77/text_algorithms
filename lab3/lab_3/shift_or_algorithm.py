@@ -37,8 +37,11 @@ def make_mask(pattern: str) -> list:
     """
     # Zaimplementuj tworzenie tablicy masek dla algorytmu Shift-Or
 
+    if len(pattern) == 0:
+        return [0xff for _ in range(256)]
+
     # Utwórz tablicę z maskami dla wszystkich znaków ASCII
-    masks = [0xff] * 256
+    masks = [2 ** len(pattern) - 1] * 256
 
     for n, character in enumerate(pattern):
         # Dla każdego znaku w pattern, ustaw odpowiednie bity w maskach
