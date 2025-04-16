@@ -12,6 +12,7 @@ class AhoCorasickNode:
         self.output_link: Optional[AhoCorasickNode] = None
         self.node_depth: int = node_depth
         self.is_terminal_node: bool = is_terminal_node
+        self.pattern: str = ""
 
     def get_character(self):
         return self.character
@@ -44,6 +45,9 @@ class AhoCorasickNode:
 
     def set_is_terminal(self, is_terminal_node: bool):
         self.is_terminal_node = is_terminal_node
+
+    def set_pattern(self, pattern: str):
+        self.pattern = pattern
 
     def __repr__(self):
         return f'AhoCorasickNode(\'{self.character}\', {self.node_depth}, is_terminal={self.is_terminal_node}, ' + \
@@ -95,6 +99,7 @@ class AhoCorasick:
                 current_node = next_node
 
             current_node.set_is_terminal(True)
+            current_node.set_pattern(pattern)
 
     def _build_failure_links(self):
         """Builds failure links and propagates outputs through them."""
@@ -130,7 +135,6 @@ class AhoCorasick:
             output_node = current_node.fail()
 
             while output_node is not None and not output_node.is_terminal():
-                # print(output_node)
                 output_node = output_node.fail()
 
             current_node.set_output(output_node)
@@ -142,9 +146,32 @@ class AhoCorasick:
         Returns:
             List of tuples (start_index, pattern).
         """
-        # TODO: Zaimplementuj wyszukiwanie wzorców w tekście
-        # TODO: Zwróć listę krotek (indeks_początkowy, wzorzec)
-        return []
+        # Zaimplementuj wyszukiwanie wzorców w tekście
+
+        result = []
+
+        current_node: AhoCorasickNode = self.root
+
+        for position, char in enumerate(text):
+            while current_node.goto(char) is None:
+                current_node = current_node.fail()
+
+                if current_node is None:
+                    current_node = self.root
+                    break
+
+            current_node = current_node.goto(char)
+            if current_node.is_terminal():
+                result.append((position - current_node.depth() + 1, current_node.pattern))
+
+            output_node = current_node.output()
+
+            while output_node is not None:
+                result.append((position - output_node.depth() + 1, output_node.pattern))
+                output_node = output_node.output()
+
+        # Zwróć listę krotek (indeks_początkowy, wzorzec)
+        return result
 
     def __print_help(self, current_node: AhoCorasickNode, current_path: str, current_string: str):
         next_nodes = current_node.goto_nodes
@@ -164,6 +191,8 @@ class AhoCorasick:
 
 if __name__ == "__main__":
     patterns = ["a", "na", "nam", "znana", "pozna"]
-    # patterns = ["a", "na", "nam"]
+    text = "xpoznana"
     aho_corasick = AhoCorasick(patterns)
     aho_corasick.print()
+    matches = aho_corasick.search(text)
+    print(matches)
