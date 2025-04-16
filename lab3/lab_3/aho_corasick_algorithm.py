@@ -4,9 +4,6 @@ from typing import List, Tuple, Optional
 from overrides import override
 
 class AhoCorasickNode:
-    pass
-
-class AhoCorasickNode:
     def __init__(self, character: str, node_depth: int, is_terminal_node: bool = False):
         # Zainicjalizuj struktury potrzebne dla węzła w drzewie Aho-Corasick
         self.character: str = character
@@ -15,6 +12,9 @@ class AhoCorasickNode:
         self.output_link: Optional[AhoCorasickNode] = None
         self.node_depth: int = node_depth
         self.is_terminal_node: bool = is_terminal_node
+
+    def get_character(self):
+        return self.character
 
     def goto(self, character: str) -> Optional[AhoCorasickNode]:
         return self.goto_nodes.get(character, None)
@@ -46,7 +46,9 @@ class AhoCorasickNode:
         self.is_terminal_node = is_terminal_node
 
     def __repr__(self):
-        return f'AhoCorasickNode(\'{self.character}\', {self.node_depth}, is_terminal={self.is_terminal_node})'
+        return f'AhoCorasickNode(\'{self.character}\', {self.node_depth}, is_terminal={self.is_terminal_node}, ' + \
+            f'fail=({None if self.fail_link is None else f"{self.fail_link.get_character()}, {self.fail_link.depth()}"}), ' + \
+            f'output=({None if self.output_link is None else f"{self.output_link.get_character()}, {self.output_link.depth()}"}))'
 
 class AhoCorasickRootNode(AhoCorasickNode):
     def __init__(self):
@@ -96,12 +98,42 @@ class AhoCorasick:
 
     def _build_failure_links(self):
         """Builds failure links and propagates outputs through them."""
-        # TODO: Zaimplementuj tworzenie failure links
-        # TODO: Utwórz kolejkę do przechodzenia przez drzewo w szerokość (BFS)
-        # TODO: Zainicjalizuj łącza awaryjne dla węzłów na głębokości 1
-        # TODO: Użyj BFS do ustawienia łączy awaryjnych dla głębszych węzłów
-        # TODO: Propaguj wyjścia przez łącza awaryjne
-        pass
+        # Zaimplementuj tworzenie failure links
+
+        # Utwórz kolejkę do przechodzenia przez drzewo w szerokość (BFS)
+        queue: deque[AhoCorasickNode] = deque([self.root])
+
+        while queue:
+            current_node = queue.popleft()
+
+            # Użyj BFS do ustawienia łączy awaryjnych dla węzłów
+            for char, goto_node in current_node.goto_nodes.items():
+                queue.append(goto_node)
+
+                # Zainicjalizuj łącza awaryjne dla węzłów na głębokości 1
+                if current_node is self.root:
+                    goto_node.set_fail(self.root)
+
+                fail_node = current_node.fail()
+
+                while fail_node is not None and fail_node is not self.root and fail_node.goto(char) is None:
+                    fail_node = fail_node.fail()
+
+                # TODO: sprawdzić czy ten if jest potrzebny; możliwe, że wystarczy zawsze
+                # ustawiać tak jak w pierwszym casie
+                if fail_node is not None and fail_node.goto(char) is not None:
+                    goto_node.set_fail(fail_node.goto(char))
+                else:
+                    goto_node.set_fail(self.root)
+
+            # Propaguj wyjścia przez łącza awaryjne
+            output_node = current_node.fail()
+
+            while output_node is not None and not output_node.is_terminal():
+                # print(output_node)
+                output_node = output_node.fail()
+
+            current_node.set_output(output_node)
 
     def search(self, text: str) -> List[Tuple[int, str]]:
         """
@@ -120,16 +152,18 @@ class AhoCorasick:
         if not next_nodes:
             print(f"current string: {current_string}")
             print(f"current path: {current_path}")
+            print()
             return
 
         for char, next_node in next_nodes.items():
-            self.__print_help(next_node, f"{current_path} -> {next_node}", current_string + char)
+            self.__print_help(next_node, f"{current_path} -> {next_node}\n", current_string + char)
 
     def print(self):
-        self.__print_help(self.root, "root", "")
+        self.__print_help(self.root, "root\n", "")
 
 
 if __name__ == "__main__":
-    patterns = ["a", "na", "nam", "znana", "poznana"]
+    patterns = ["a", "na", "nam", "znana", "pozna"]
+    # patterns = ["a", "na", "nam"]
     aho_corasick = AhoCorasick(patterns)
     aho_corasick.print()
