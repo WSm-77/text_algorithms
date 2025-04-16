@@ -124,7 +124,7 @@ class AhoCorasick:
                 while fail_node is not None and fail_node is not self.root and fail_node.goto(char) is None:
                     fail_node = fail_node.fail()
 
-                # TODO: sprawdzić czy ten if jest potrzebny; możliwe, że wystarczy zawsze
+                # sprawdzić czy ten if jest potrzebny; możliwe, że wystarczy zawsze
                 # ustawiać tak jak w pierwszym casie
                 if fail_node is not None and fail_node.goto(char) is not None:
                     goto_node.set_fail(fail_node.goto(char))
@@ -156,11 +156,8 @@ class AhoCorasick:
             while current_node.goto(char) is None:
                 current_node = current_node.fail()
 
-                if current_node is None:
-                    current_node = self.root
-                    break
-
             current_node = current_node.goto(char)
+
             if current_node.is_terminal():
                 result.append((position - current_node.depth() + 1, current_node.pattern))
 
@@ -186,7 +183,7 @@ class AhoCorasick:
             self.__print_help(next_node, f"{current_path} -> {next_node}\n", current_string + char)
 
     def print(self):
-        self.__print_help(self.root, "root\n", "")
+        self.__print_help(self.root, f"{self.root}\n", "")
 
 
 if __name__ == "__main__":
