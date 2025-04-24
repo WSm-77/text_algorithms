@@ -124,8 +124,6 @@ class AhoCorasick:
                 while fail_node is not None and fail_node is not self.root and fail_node.goto(char) is None:
                     fail_node = fail_node.fail()
 
-                # sprawdzić czy ten if jest potrzebny; możliwe, że wystarczy zawsze
-                # ustawiać tak jak w pierwszym casie
                 if fail_node is not None and fail_node.goto(char) is not None:
                     goto_node.set_fail(fail_node.goto(char))
                 else:
