@@ -1,5 +1,23 @@
 from lab4.ukkonen_algorithm import SuffixTree, Node
 
+class UniqueCharGenerator:
+    def __init__(self):
+        self.offset = 0
+
+    def __next__(self):
+        char = chr(128 + self.offset)
+        self.offset += 1
+        return char
+
+def check_if_contains_all_classyfication_bits(classyfication: int, strings_cnt: int):
+    for _ in range(strings_cnt):
+        if (classyfication & 1 == 0):
+            return False
+
+        classyfication >>= 1
+
+    return True
+
 def longest_common_substring(str1: str, str2: str) -> str:
     """
     Find the longest common substring of two strings using a suffix tree.
@@ -11,15 +29,6 @@ def longest_common_substring(str1: str, str2: str) -> str:
     Returns:
         The longest common substring
     """
-
-    def check_if_contains_all_classyfication_bits(classyfication: int, strings_cnt: int):
-        for _ in range(strings_cnt):
-            if (classyfication & 1 == 0):
-                return False
-
-            classyfication >>= 1
-
-        return True
 
     def get_node_classification(node: Node, text_depth: int = 0) -> int:
         nonlocal str1_len, trie, max_height, substring_start_idx
@@ -49,14 +58,13 @@ def longest_common_substring(str1: str, str2: str) -> str:
     combined = str1 + "#" + str2
 
     # Build a suffix tree for the combined string
-    # Traverse the tree to find the longest path that occurs in both strings
-
     trie = SuffixTree(combined)
 
     str1_len = len(str1) + 1
     max_height = 0
     substring_start_idx = 0
 
+    # Traverse the tree to find the longest path that occurs in both strings
     root_classifiaction = get_node_classification(trie.root)
 
     if not check_if_contains_all_classyfication_bits(root_classifiaction, 2):
@@ -76,10 +84,62 @@ def longest_common_substring_multiple(strings: list[str]) -> str:
     Returns:
         The longest common substring that appears in all strings
     """
-    # Implement an algorithm to find the longest common substring in multiple strings
-    # You may use either suffix trees or suffix arrays
 
-    pass
+    def get_node_classification(node: Node, text_depth: int = 0) -> int:
+        nonlocal string_sizes, trie, max_height, substring_start_idx
+
+        if not node.children:
+            # return 2 ** (index of string in combined string) to allow bitwise or classification
+            for str_idx, size in enumerate(string_sizes):
+                if node.id < size:
+                    return 1 << str_idx
+
+            raise Exception("Should never happen")
+
+        classyfication = 0
+
+        for child_node in node.children.values():
+            child_node_width = child_node.width()
+            bits = get_node_classification(child_node, text_depth + child_node_width)
+            classyfication |= bits
+
+        if check_if_contains_all_classyfication_bits(classyfication, len(strings)):
+            if max_height < text_depth:
+                max_height = text_depth
+                substring_start_idx = node.end.value - text_depth + 1
+
+        return classyfication
+
+    if len(strings) == 0:
+        return ""
+
+    # Concatenate the strings with a unique separator
+    combined = strings[0]
+    gen = UniqueCharGenerator()
+
+    string_sizes = [len(strings[0]) + 1]
+
+    for idx in range(1, len(strings)):
+        string = strings[idx]
+        combined += next(gen) + string
+
+        string_sizes.append(len(combined) + 1)
+
+    # Build a suffix tree for the combined string
+    trie = SuffixTree(combined)
+
+    max_height = 0
+    substring_start_idx = 0
+
+    # Traverse the tree to find the longest path that occurs in all strings
+    root_classifiaction = get_node_classification(trie.root)
+
+    if not check_if_contains_all_classyfication_bits(root_classifiaction, len(strings)):
+        return ""
+
+    lcs = combined[substring_start_idx:substring_start_idx + max_height]
+
+    return lcs
 
 def longest_palindromic_substring(text: str) -> str:
     """
@@ -98,9 +158,14 @@ def longest_palindromic_substring(text: str) -> str:
     pass
 
 if __name__ == "__main__":
-    # str1 = "ananas"
-    # str2 = "banan"
     str1 = "ananas"
-    str2 = "kot"
-    lcs = longest_common_substring(str1, str2)
+    str2 = "banan"
+    # str1 = "ananas"
+    # str2 = "kot"
+    # lcs = longest_common_substring(str1, str2)
+    str3 = "kanapa"
+    str4 = "anna"
+    lcs = longest_common_substring_multiple([str1, str2, str3, str4])
     print(lcs)
+
+    # gen = UniqueCharGenerator()
