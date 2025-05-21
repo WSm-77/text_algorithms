@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import Optional
+from collections import deque
 
 class IntRef:
     def __init__(self, value):
@@ -144,25 +145,47 @@ class SuffixTree:
         Returns:
             A list of positions where the pattern occurs in the text
         """
-        # Implement pattern search using the suffix tree
 
-        # result = []
+        if len(pattern) == 0 or pattern[0] not in self.root.children:
+            return []
 
-        # current_node = self.root
-        # current_lengt = 0
+        curr_node = self.root.children[pattern[0]]
+        pattern_found = True
 
-        # pattern_found = True
+        pos = 0
 
-        # for char in pattern:
-        #     if char != self.text[current_node.start + current_lengt]:
-        #         pattern_found = False
-        #         break
+        for i in range(1, len(pattern)):
+            char = pattern[i]
+            pos += 1
+            if pos < curr_node.width():
+                if char != self.text[curr_node.start + pos]:
+                    pattern_found = False
+                    break
+            else:
+                if char in curr_node.children:
+                    curr_node = curr_node.children[char]
+                    pos = 0
+                else:
+                    pattern_found = False
+                    break
 
-        #     current_lengt += 1
+        if not pattern_found:
+            return []
 
-        #     if
+        result = []
+        to_check = deque([curr_node])
 
-        pass
+        while to_check:
+            node = to_check.popleft()
+
+            if not node.children:
+                result.append(node.id)
+                continue
+
+            for child_node in node.children.values():
+                to_check.append(child_node)
+
+        return result
 
     def __print_help(self, current_node: Node, current_path: str, current_string: str):
         next_nodes = current_node.children
@@ -217,11 +240,12 @@ class SuffixTree:
         return True
 
 if __name__ == "__main__":
-    # text = "abcabx"
-    # text = "abcabxabd"
-    # text = "abcabxabcd"
-    # text = "banan"
-    # text = "niedzwiedzdzwiedz"
-    text = "text with\nspaces"
+    text = "ananas"
     trie = SuffixTree(text)
     trie.print()
+    pattern = "ana"
+    pattern_idx = trie.find_pattern(pattern)
+    print("text:")
+    print(text)
+    print()
+    print(f"pattern '{pattern}' found at {pattern_idx}")
