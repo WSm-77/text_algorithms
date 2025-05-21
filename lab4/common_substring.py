@@ -1,5 +1,4 @@
-# from lab4.ukkonen_algorithm import SuffixTree, Node
-from ukkonen_algorithm import SuffixTree, Node
+from lab4.ukkonen_algorithm import SuffixTree, Node
 
 class UniqueCharGenerator:
     def __init__(self):
@@ -153,85 +152,62 @@ def longest_palindromic_substring(text: str) -> str:
         The longest palindromic substring
     """
 
-    # Create a new string concatenating the original text and its reverse
-    # Use suffix structures to find the longest common substring between them
-    # Handle the case where palindrome centers between characters
-
     def get_node_classification(node: Node, text_depth: int = 0) -> int:
-        nonlocal max_len, start_idx
+        nonlocal str1_len, trie, max_height, substring_start_idx
 
         if not node.children:
-            # Return 1 if suffix starts in original text, 2 if in reversed
-            if node.id < n:
-                return 1
-            elif node.id > n:
-                return 2
+            # return 2 ** (index of string in combined string) to allow bitwise or classification
+            if node.id < str1_len:
+                forward_indices[node] = {node.id}
+                reverse_indices[node] = set()
+                return 1 << 0
             else:
-                return 0  # Separator
-        classyfication = 0
-        for child in node.children.values():
-            child_width = child.width()
-            bits = get_node_classification(child, text_depth + child_width)
-            classyfication |= bits
+                forward_indices[node] = set()
+                reverse_indices[node] = {node.id - str1_len}
+                return 1 << 1
 
-        # If this node is present in both original and reversed text
-        if classyfication == 3 and text_depth > max_len:
-            # Find the start index in the original text
-            # node.end.value - text_depth + 1 is the start in combined string
-            candidate_start = node.end.value - text_depth + 1
-            if candidate_start < n:
-                # Check if the substring is a palindrome
-                candidate = combined[candidate_start:candidate_start + text_depth]
-                if candidate == candidate[::-1]:
-                    max_len = text_depth
-                    start_idx = candidate_start
+        classyfication = 0
+
+        forward_indices[node] = set()
+        reverse_indices[node] = set()
+
+        for child_node in node.children.values():
+            child_node_width = child_node.width()
+            bits = get_node_classification(child_node, text_depth + child_node_width)
+            classyfication |= bits
+            forward_indices[node] |= forward_indices[child_node]
+            reverse_indices[node] |= reverse_indices[child_node]
+
+        # if check_if_contains_all_classyfication_bits(classyfication, 2):
+        if max_height < text_depth and forward_indices[node] and reverse_indices[node]:
+            for forward_idx in forward_indices[node]:
+                reverse_idx = (str1_len - 2) - (forward_idx + text_depth - 1)
+
+                if reverse_idx in reverse_indices[node]:
+                    max_height = text_depth
+                    substring_start_idx = node.end.value - text_depth + 1
+                    break
 
         return classyfication
 
-    if not text:
-        return ""
-
-    # Concatenate text and its reverse with a unique separator
-    sep = chr(128)
-    reversed_text = text[::-1]
-    combined = text + sep + reversed_text
+    str1 = text
+    str2 = text[::-1]
+    # Concatenate the strings with a unique separator
+    combined = str1 + "#" + str2
 
     # Build a suffix tree for the combined string
     trie = SuffixTree(combined)
-    n = len(text)
 
-    max_len = 0
-    start_idx = 0
+    str1_len = len(str1) + 1
+    max_height = 0
+    substring_start_idx = 0
 
+    forward_indices = {}
+    reverse_indices = {}
+
+    # Traverse the tree to find the longest path that occurs in both strings
     get_node_classification(trie.root)
 
-    return text[start_idx:start_idx + max_len]
+    lcs = combined[substring_start_idx:substring_start_idx + max_height]
 
-if __name__ == "__main__":
-    # str1 = "ananas"
-    # str2 = "banan"
-    # str1 = "ananas"
-    # str2 = "kot"
-    # lcs = longest_common_substring(str1, str2)
-    # str3 = "kanapa"
-    # str4 = "anna"
-    # lcs = longest_common_substring_multiple([str1, str2, str3, str4])
-    # print(lcs)
-
-    text = "xababayz"
-    lps = longest_palindromic_substring(text)
-    print(f"lps of '{text}' is '{lps}'")
-
-    text = "abacdfgdcaba"
-    lps = longest_palindromic_substring(text)
-    print(f"lps of '{text}' is '{lps}'")
-
-    text = "pqrqpabcdfgdcba"
-    lps = longest_palindromic_substring(text)
-    print(f"lps of '{text}' is '{lps}'")
-
-    text = "pqqpabcdfghfdcba"
-    lps = longest_palindromic_substring(text)
-    print(f"lps of '{text}' is '{lps}'")
-
-    # gen = UniqueCharGenerator()
+    return lcs

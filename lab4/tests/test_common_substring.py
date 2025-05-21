@@ -1,5 +1,5 @@
 import pytest
-from lab4.common_substring import longest_common_substring, longest_common_substring_multiple
+from lab4.common_substring import longest_common_substring, longest_common_substring_multiple, longest_palindromic_substring
 
 class TestLCS:
     def test_basic_overlap(self):
@@ -58,3 +58,39 @@ class TestLCSMultiple:
 
     def test_overlap_a_lot_of_texts(self):
         assert longest_common_substring_multiple(["banana", "ananas", "canada", "kanapa", "x" * 8 + "ana" + "x" * 8]) == "ana"
+
+class TestLPS:
+    def test_basic_palindrome(self):
+        assert longest_palindromic_substring("babad") in {"bab", "aba"}
+
+    def test_even_length_palindrome(self):
+        assert longest_palindromic_substring("cbbd") == "bb"
+
+    def test_reverse_substring_longer_than_palindromic_substring(self):
+        assert longest_palindromic_substring("abacdfgdcaba") == "aba"
+        assert longest_palindromic_substring("pqqpabcdfghfdcba") == "pqqp"
+
+    def test_full_string_palindrome(self):
+        assert longest_palindromic_substring("racecar") == "racecar"
+        assert longest_palindromic_substring("a"*20) == "a"*20
+
+    def test_single_character(self):
+        assert longest_palindromic_substring("a") == "a"
+
+    def test_empty_string(self):
+        assert longest_palindromic_substring("") == ""
+
+    def test_no_palindrome_longer_than_one(self):
+        assert longest_palindromic_substring("abcde") in {"a", "b", "c", "d", "e"}
+
+    def test_palindrome_at_start(self):
+        assert longest_palindromic_substring("racecarxyz") == "racecar"
+
+    def test_palindrome_at_end(self):
+        assert longest_palindromic_substring("xyzracecar") == "racecar"
+
+    def test_multiple_same_length(self):
+        assert longest_palindromic_substring("bccbabaab") in {"bccb", "baab"}
+
+    def test_case_sensitivity(self):
+        assert longest_palindromic_substring("Aa") in {"A", "a"}
