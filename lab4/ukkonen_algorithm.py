@@ -46,6 +46,8 @@ class SuffixTree:
 
         self.build_tree()
 
+        self.__size = self.leaf_id
+
     def build_tree(self):
         """
         Build the suffix tree using Ukkonen's algorithm.
@@ -202,22 +204,6 @@ class SuffixTree:
     def print(self):
         self.__print_help(self.root, f"{self.root.debug_str()}\n", "")
 
-    def count_suffixes(self):
-        def count_suffixes_help(current_node: Node):
-            nonlocal cnt
-            next_nodes = current_node.children
-
-            if not next_nodes:
-                cnt += 1
-                return
-
-            for next_node in next_nodes.values():
-                count_suffixes_help(next_node)
-        cnt = 0
-        count_suffixes_help(self.root)
-
-        return cnt
-
     def contains_suffix(self, suffix: str):
         if suffix[0] not in self.root.children:
             return False
@@ -238,6 +224,9 @@ class SuffixTree:
                     return False
 
         return True
+
+    def __len__(self):
+        return self.__size
 
 if __name__ == "__main__":
     text = "ananas"

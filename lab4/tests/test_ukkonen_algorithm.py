@@ -16,7 +16,7 @@ class TestSuffixTree:
 
         for text in TestSuffixTree.texts:
             trie = SuffixTree(text)
-            assert len(trie.text) == trie.count_suffixes()
+            assert len(trie.text) == len(trie)
 
     def test_build_tree_texts(self):
         texts_dir = "texts"
@@ -27,7 +27,7 @@ class TestSuffixTree:
             with open(full_file_path, "r") as file:
                 text = file.read()
                 trie = SuffixTree(text)
-                assert len(trie.text) == trie.count_suffixes()
+                assert len(trie.text) == len(trie)
 
     def test_find_pattern_basic(self):
         text = "ABABCABCABC"
