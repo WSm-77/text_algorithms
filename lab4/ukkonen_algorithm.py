@@ -41,12 +41,13 @@ class SuffixTree:
         self.active_length: int = 0
         self.remainder: int = 0
         self.leaf_id: int = 0
+        self.inner_node_cnt: int = 0
 
         Node.text = self.text
 
         self.build_tree()
 
-        self.__size = self.leaf_id
+        self.leaf_cnt = self.leaf_id
 
     def build_tree(self):
         """
@@ -113,6 +114,7 @@ class SuffixTree:
 
                 inner_node_end_ref = IntRef(curr_child.start + self.active_length - 1)
                 inner_node = Node(end = inner_node_end_ref, start = curr_child.start)
+                self.inner_node_cnt += 1
                 self.add_child_node(self.active_node, inner_node)
 
                 if last_added_node is not None:
@@ -225,8 +227,14 @@ class SuffixTree:
 
         return True
 
+    def get_leaves_cnt(self):
+        return self.leaf_cnt
+
+    def get_inner_nodes_cnt(self):
+        return self.inner_node_cnt
+
     def __len__(self):
-        return self.__size
+        return self.get_inner_nodes_cnt() + self.get_leaves_cnt()
 
 if __name__ == "__main__":
     text = "ananas"
