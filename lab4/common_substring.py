@@ -1,4 +1,5 @@
 from lab4.ukkonen_algorithm import SuffixTree, Node
+from lab4.suffix_array import SuffixArray
 
 class UniqueCharGenerator:
     def __init__(self):
@@ -211,3 +212,43 @@ def longest_palindromic_substring(text: str) -> str:
     lcs = combined[substring_start_idx:substring_start_idx + max_height]
 
     return lcs
+
+def longest_common_substring_suffix_array(a, b, delimiter='#'):
+    # Concatenate with delimiter
+    combined = a + delimiter + b
+    l1 = len(a)
+
+    # Build suffix array (naive approach for clarity)
+    suffix_array = SuffixArray(combined)
+
+    # Compute LCP array using Kasai's algorithm
+    n = len(suffix_array)
+    rank = [0] * n
+    for i in range(n):
+        rank[suffix_array.suffixes[i]] = i
+
+    lcp = [0] * (n - 1)
+    h = 0
+    for i in range(n):
+        if rank[i] == 0:
+            continue
+        j = suffix_array.suffixes[rank[i] - 1]
+        while i + h < n and j + h < n and combined[i + h] == combined[j + h]:
+            h += 1
+        lcp[rank[i] - 1] = h
+        if h > 0:
+            h -= 1
+
+    # Find maximum LCP across string boundaries
+    max_len = 0
+    start = 0
+    for i in range(n - 1):
+        idx1 = suffix_array.suffixes[i]
+        idx2 = suffix_array.suffixes[i + 1]
+
+        # Check if suffixes are from different original strings
+        if (idx1 < l1) != (idx2 < l1) and lcp[i] > max_len:
+            max_len = lcp[i]
+            start = min(idx1, idx2)
+
+    return combined[start:start + max_len] if max_len > 0 else ""
