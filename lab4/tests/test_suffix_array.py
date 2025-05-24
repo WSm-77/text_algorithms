@@ -1,7 +1,7 @@
 import pytest
 from lab4.suffix_array import SuffixArray
 
-class TestSuffixTreeFindPattern:
+class TestSuffixArrayFindPattern:
     def test_find_pattern_basic(self):
         text = "ABABCABCABC"
         pattern = "ABC"
