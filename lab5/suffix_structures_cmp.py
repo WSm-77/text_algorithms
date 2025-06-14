@@ -1,5 +1,5 @@
-from lab4.suffix_array import SuffixArray
-from lab4.ukkonen_algorithm import SuffixTree
+from lab5.suffix_array import SuffixArray
+from lab5.ukkonen_algorithm import SuffixTree
 from typing import Callable
 import time
 from memory_profiler import memory_usage

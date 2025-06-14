@@ -1,5 +1,5 @@
 import pytest
-from lab4.common_substring import longest_common_substring, longest_common_substring_multiple, longest_palindromic_substring, longest_common_substring_suffix_array
+from lab5.common_substring import longest_common_substring, longest_common_substring_multiple, longest_palindromic_substring, longest_common_substring_suffix_array
 
 class TestLCS:
     def test_basic_overlap(self):

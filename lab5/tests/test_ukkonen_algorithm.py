@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from lab4.ukkonen_algorithm import SuffixTree
+from lab5.ukkonen_algorithm import SuffixTree
 
 class TestSuffixTreeBuild:
     texts = ["abcabx",

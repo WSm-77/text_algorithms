@@ -1,13 +1,13 @@
 import time
 from memory_profiler import memory_usage
 from typing import Callable
-from lab4.benchmark.naive_pattern_matching import naive_pattern_match
-from lab4.benchmark.kmp_algorithm import kmp_pattern_match
-from lab4.benchmark.boyer_moore_algorithm import boyer_moore_pattern_match
-from lab4.benchmark.rabin_karp_algorithm import rabin_karp_pattern_match
-from lab4.benchmark.aho_corasick_algorithm import AhoCorasick
-from lab4.benchmark.suffix_array import SuffixArray
-from lab4.benchmark.ukkonen_algorithm import SuffixTree
+from lab5.benchmark.naive_pattern_matching import naive_pattern_match
+from lab5.benchmark.kmp_algorithm import kmp_pattern_match
+from lab5.benchmark.boyer_moore_algorithm import boyer_moore_pattern_match
+from lab5.benchmark.rabin_karp_algorithm import rabin_karp_pattern_match
+from lab5.benchmark.aho_corasick_algorithm import AhoCorasick
+from lab5.benchmark.suffix_array import SuffixArray
+from lab5.benchmark.ukkonen_algorithm import SuffixTree
 
 
 def compare_pattern_matching_algorithms(text: str, pattern: str) -> dict:

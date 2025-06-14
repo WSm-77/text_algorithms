@@ -1,5 +1,5 @@
 import pytest
-from lab4.suffix_array import SuffixArray
+from lab5.suffix_array import SuffixArray
 
 class TestSuffixArrayFindPattern:
     def test_find_pattern_basic(self):

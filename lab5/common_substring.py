@@ -1,5 +1,5 @@
-from lab4.ukkonen_algorithm import SuffixTree, Node
-from lab4.suffix_array import SuffixArray
+from lab5.ukkonen_algorithm import SuffixTree, Node
+from lab5.suffix_array import SuffixArray
 
 class UniqueCharGenerator:
     def __init__(self):
