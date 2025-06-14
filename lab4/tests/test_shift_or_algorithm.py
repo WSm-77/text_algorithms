@@ -1,4 +1,4 @@
-from lab_3.shift_or_algorithm import set_nth_bit, nth_bit, make_mask, shift_or
+from lab4.shift_or_algorithm import set_nth_bit, nth_bit, make_mask, shift_or
 
 
 class TestShiftOrAlgorithm:

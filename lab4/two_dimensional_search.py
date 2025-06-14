@@ -1,4 +1,4 @@
-from lab_3.shift_or_algorithm import shift_or
+from lab4.shift_or_algorithm import shift_or
 
 def find_pattern_in_column(text_column: str, pattern_columns: list[str]) -> list[tuple[int, int]]:
     """

@@ -1,4 +1,4 @@
-from lab_3.fuzzy_matching import hamming_distance, fuzzy_shift_or
+from lab4.fuzzy_matching import hamming_distance, fuzzy_shift_or
 
 
 class TestFuzzyMatching:

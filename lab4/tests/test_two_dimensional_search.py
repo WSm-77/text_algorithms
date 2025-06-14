@@ -1,4 +1,4 @@
-from lab_3.two_dimensional_search import find_pattern_2d
+from lab4.two_dimensional_search import find_pattern_2d
 
 
 class TestTwoDimensionalSearch:

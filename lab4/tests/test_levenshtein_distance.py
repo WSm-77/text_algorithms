@@ -1,4 +1,4 @@
-from lab_3.levenshtein_distance import levenshtein_distance
+from lab4.levenshtein_distance import levenshtein_distance
 
 
 class TestLevenshteinDistance:
