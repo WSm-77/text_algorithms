@@ -1,4 +1,4 @@
-from lab_2.naive_pattern_matching import naive_pattern_match
+from lab3.naive_pattern_matching import naive_pattern_match
 
 
 class TestNaivePatternMatching:

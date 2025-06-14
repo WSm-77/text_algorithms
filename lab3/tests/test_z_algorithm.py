@@ -1,4 +1,4 @@
-from lab_2.z_algorithm import compute_z_array, z_pattern_match
+from lab3.z_algorithm import compute_z_array, z_pattern_match
 
 
 class TestZAlgorithm:

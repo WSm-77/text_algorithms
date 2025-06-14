@@ -1,4 +1,4 @@
-from lab_2.kmp_algorithm import compute_lps_array, kmp_pattern_match
+from lab3.kmp_algorithm import compute_lps_array, kmp_pattern_match
 
 
 class TestKMPAlgorithm:

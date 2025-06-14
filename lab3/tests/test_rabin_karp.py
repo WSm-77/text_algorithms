@@ -1,4 +1,4 @@
-from lab_2.rabin_karp_algorithm import rabin_karp_pattern_match
+from lab3.rabin_karp_algorithm import rabin_karp_pattern_match
 
 
 class TestRabinKarpAlgorithm:

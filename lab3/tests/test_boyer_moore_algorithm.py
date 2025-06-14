@@ -1,4 +1,4 @@
-from lab_2.boyer_moore_algorithm import (
+from lab3.boyer_moore_algorithm import (
     compute_bad_character_table,
     compute_good_suffix_table,
     boyer_moore_pattern_match
