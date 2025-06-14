@@ -1,4 +1,4 @@
-from lab1.build_dfa import (
+from lab2.build_dfa import (
     Alternative,
     Concatenation,
     Empty,
